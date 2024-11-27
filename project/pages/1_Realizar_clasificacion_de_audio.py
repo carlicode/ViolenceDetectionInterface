@@ -3,7 +3,6 @@ import librosa
 import soundfile as sf
 import os
 import pandas as pd
-import whisper  
 from modules.chroma_query import load_chroma_db, query_chroma_db
 from modules.audio_prediction import load_audio_model, split_audio, predict_episode
 
