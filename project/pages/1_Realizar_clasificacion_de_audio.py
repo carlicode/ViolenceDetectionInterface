@@ -15,13 +15,13 @@ labels = ["crying", "glass_breaking", "gun_shot", "people_talking", "screams"]
 
 # Opciones de modelos disponibles
 models = {
-    "Audios originales con 20 epochs": "models/soriginal_dataset_20.h5",
-    "Audios originales con 30 epochs": "models/soriginal_dataset_30.h5",
-    "Audios originales con 40 epochs": "models/soriginal_dataset_40.h5",
-    "Audios originales con 100 epochs": "models/soriginal_dataset_100.h5",
-    "Gaussian Noise con 20 epochs": "models/sgaussian noise_20.h5",
-    "Gaussian Noise con 30 epochs": "models/sgaussian noise_30.h5",
-    "Gaussian Noise con 40 epochs": "models/sgaussian noise_40.h5",
+    "Audios originales con 20 epochs": "models/original_dataset_20.h5",
+    "Audios originales con 30 epochs": "models/original_dataset_30.h5",
+    "Audios originales con 40 epochs": "models/original_dataset_40.h5",
+    "Audios originales con 100 epochs": "models/original_dataset_100.h5",
+    "Gaussian Noise con 20 epochs": "models/gaussian noise_20.h5",
+    "Gaussian Noise con 30 epochs": "models/gaussian noise_30.h5",
+    "Gaussian Noise con 40 epochs": "models/gaussian noise_40.h5",
     "Gaussian Noise con 100 epochs": "models/gaussian_noise_100.h5"
 }
 
