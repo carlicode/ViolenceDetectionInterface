@@ -1,3 +1,4 @@
+pysqlite3-binary
 numpy==1.26.4
 librosa==0.10.2.post1
 scikit-learn==1.5.2
