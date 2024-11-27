@@ -1,7 +1,3 @@
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
 import streamlit as st
 import os
 import pandas as pd
@@ -44,16 +40,25 @@ else:
                 columns_of_interest = ["crying", "glass_breaking", "gun_shot", "people_talking", "screams"]
                 if all(col in df.columns for col in columns_of_interest):
                     df_filtered = df[columns_of_interest]
-                    
+
                     # Crear una columna de tiempo a partir del índice
                     time_intervals = df["Tiempo del Fragmento"].str.split(",", expand=True).astype(float)
                     df_filtered["Tiempo"] = time_intervals[0]  # Usar la columna inicial del tiempo
-                    
+
+                    # Definir colores fijos para las etiquetas
+                    label_colors = {
+                        "crying": "blue",  # Azul
+                        "glass_breaking": "purple",  # Púrpura
+                        "gun_shot": "red",  # Rojo para balas
+                        "people_talking": "green",  # Verde para personas hablando
+                        "screams": "orange"  # Naranja para gritos
+                    }
+
                     # Gráfico 1: Todas las etiquetas respecto al tiempo
                     st.subheader("Distribución de todas las etiquetas respecto al tiempo")
                     plt.figure(figsize=(10, 6))
                     for col in columns_of_interest:
-                        plt.plot(df_filtered["Tiempo"], df_filtered[col], label=col)
+                        plt.plot(df_filtered["Tiempo"], df_filtered[col], label=col, color=label_colors[col])
 
                     plt.title("Distribución de etiquetas respecto al tiempo")
                     plt.xlabel("Tiempo (segundos)")
@@ -69,7 +74,7 @@ else:
                     for col in columns_of_interest:
                         filtered_df = df_filtered[df_filtered[col] > 20]
                         if not filtered_df.empty:
-                            plt.plot(filtered_df["Tiempo"], filtered_df[col], label=col)
+                            plt.plot(filtered_df["Tiempo"], filtered_df[col], label=col, color=label_colors[col])
 
                     plt.title("Etiquetas mayores al 20% respecto al tiempo")
                     plt.xlabel("Tiempo (segundos)")
