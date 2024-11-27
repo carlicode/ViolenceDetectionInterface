@@ -9,3 +9,4 @@ openai==1.55.1
 chromadb
 openpyxl==3.1.2
 streamlit
+pysqlite3-binary
