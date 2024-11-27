@@ -3,12 +3,16 @@ import librosa
 import soundfile as sf
 import os
 import pandas as pd
+from openai import OpenAI
 from modules.chroma_query import load_chroma_db, query_chroma_db
 from modules.audio_prediction import load_audio_model, split_audio, predict_episode
 
 # Configuración del directorio para guardar el histórico
 HISTORIC_DIR = 'histórico/'
 os.makedirs(HISTORIC_DIR, exist_ok=True)
+
+#OPENAI_API_KEY = ''
+client = OpenAI()
 
 # Etiquetas para las predicciones
 labels = ["crying", "glass_breaking", "gun_shot", "people_talking", "screams"]
@@ -36,11 +40,13 @@ model_choice = st.selectbox("Selecciona el modelo de predicción:", list(models.
 model = load_audio_model(models[model_choice])
 st.write(f"Modelo seleccionado: **{model_choice}**")
 
-# Función para convertir audio a texto usando Whisper
+# Función para convertir audio a texto usando openAI
 def audio_to_text(audio_path):
-    model = whisper.load_model("base")  # Cargar el modelo base de Whisper
-    result = model.transcribe(audio_path, language="es")  # Transcribir el audio siempre a español
-    return result["text"]  # Devolver el texto transcrito
+    audio_file = open(audio_path, "rb")
+    transcription = client.audio.transcriptions.create(
+        model="whisper-1", 
+        file=audio_file)
+    return transcription.text  # Devolver el texto transcrito
 
 # Subir archivo de audio
 uploaded_file = st.file_uploader("Sube un archivo de audio", type=["wav"])
