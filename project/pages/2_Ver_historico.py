@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Configuración del directorio de histórico
-HISTORIC_DIR = '/Users/carli.code/Desktop/ViolenceDetection/histórico'
+HISTORIC_DIR = 'ViolenceDetection/histórico'
 
 # Título de la página
 st.title("Ver Histórico")
