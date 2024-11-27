@@ -1,33 +1,4 @@
 import streamlit as st
-import librosa
-import soundfile as sf
-import os
-import pandas as pd
-import whisper  
-from modules.chroma_query import load_chroma_db, query_chroma_db
-from modules.audio_prediction import load_audio_model, split_audio, predict_episode
-
-# Configuración del directorio para guardar el histórico
-HISTORIC_DIR = 'histórico/'
-os.makedirs(HISTORIC_DIR, exist_ok=True)
-
-# Etiquetas para las predicciones
-labels = ["crying", "glass_breaking", "gun_shot", "people_talking", "screams"]
-
-# Opciones de modelos disponibles
-models = {
-    "Audios originales con 20 epochs": "/modelsoriginal_dataset_20.h5",
-    "Audios originales con 30 epochs": "/modelsoriginal_dataset_30.h5",
-    "Audios originales con 40 epochs": "/modelsoriginal_dataset_40.h5",
-    "Audios originales con 100 epochs": "/modelsoriginal_dataset_100.h5",
-    "Gaussian Noise con 20 epochs": "/modelsgaussian noise_20.h5",
-    "Gaussian Noise con 30 epochs": "/modelsgaussian noise_30.h5",
-    "Gaussian Noise con 40 epochs": "/modelsgaussian noise_40.h5",
-    "Gaussian Noise con 100 epochs": "/models/gaussian_noise_100.h5"
-}
-
-# Cargar la base vectorial de ChromaDB
-db = load_chroma_db()
 
 # Página de Streamlit
 st.title("IMPLEMENTACIÓN DE MODELO DE PROCESAMIENTO DE LENGUAJE NATURAL PARA PREDICCIÓN DE VIOLENCIA MEDIANTE SEGMENTACIÓN DE AUDIO STREAM")
@@ -37,67 +8,15 @@ En esta interfaz podrás cargar un archivo de audio y seleccionar un modelo de p
 Este sistema está diseñado para detectar y clasificar eventos como llantos, disparos, vidrios rotos, entre otros.
 """)
 
-# Selector de modelo
-model_choice = st.selectbox("Selecciona el modelo de predicción:", list(models.keys()))
-model = load_audio_model(models[model_choice])
-st.write(f"Modelo seleccionado: **{model_choice}**")
-
 st.write("""
-### Paso 1: Subir archivo de audio
-Sube un archivo de audio en formato WAV para analizarlo. Este archivo será dividido en fragmentos de 2 segundos para realizar las predicciones.
+### ¿Cómo funciona?
+1. **Subida de archivo de audio**: Puedes cargar un archivo de audio en formato WAV. El archivo será automáticamente dividido en fragmentos de 2 segundos para realizar las predicciones.
+2. **Selección de modelo de predicción**: Luego podrás elegir el modelo de predicción que prefieras. Este modelo se encargará de identificar diferentes tipos de eventos, como gritos, disparos, llantos, etc.
+3. **Análisis de fragmentos**: Una vez cargado el archivo y seleccionado el modelo, el sistema analizará cada fragmento de audio y presentará las predicciones correspondientes.
+4. **Visualización de resultados**: Los resultados de las predicciones y la transcripción del audio se mostrarán en tablas y gráficos, lo que te permitirá obtener un análisis detallado de los eventos detectados.
+5. **Descarga del histórico**: Finalmente, tendrás la opción de descargar un archivo histórico con todos los resultados y detalles de los fragmentos procesados.
+
+### Objetivo
+Este modelo de procesamiento de lenguaje natural está diseñado para analizar audios segmentados, identificar eventos violentos y proporcionar un puntaje de violencia basado en los datos obtenidos. Además, se integran características de transcripción de texto y búsqueda de similitudes mediante una base de datos de embeddings.
+
 """)
-
-# Subir archivo de audio
-uploaded_file = st.file_uploader("Sube un archivo de audio", type=["wav"])
-
-if uploaded_file:
-    st.write("### Paso 2: Realizando la clasificación")
-    audio, sr = librosa.load(uploaded_file, sr=16000, mono=True)
-    episodes = split_audio(audio, sr)  # Dividir el audio en fragmentos de 2 segundos
-    historical_data = []
-
-    st.write(f"Se detectaron {len(episodes)} fragmentos de 2 segundos.")
-
-    # Realizar las predicciones
-    predictions = predict_episode(episodes, model)
-    for i, (episode, pred) in enumerate(zip(episodes, predictions)):
-        fragment_filename = f"fragment_{i + 1}.wav"
-        sf.write(fragment_filename, episode, 16000)
-
-        st.audio(fragment_filename, format="audio/wav")
-
-        recognized_text = audio_to_text(fragment_filename)  # Usamos la función de Whisper
-        document, distance = query_chroma_db(db, recognized_text) if recognized_text else (None, None)
-
-        pred_percentage = [round(p * 100, 2) for p in pred]
-        fragment_time = f"{i * 2},{(i + 1) * 2}"
-        historical_data.append({
-            'Número de Fragmento': i + 1,
-            'Tiempo del Fragmento': fragment_time,
-            'Texto': recognized_text or "",
-            'Embedding Asociado': document or "",
-            'Distancia': f"{distance:.4f}" if distance else "",
-            **{label: percentage for label, percentage in zip(labels, pred_percentage)}
-        })
-
-        st.write(f"Fragmento {i + 1}: Probabilidades")
-        st.table(pd.DataFrame({'Label': labels, 'Probabilidad (%)': pred_percentage}))
-
-        st.write(f"Fragmento {i + 1}: Texto Identificado")
-        st.table(pd.DataFrame({
-            'Texto': [recognized_text or ""],
-            'Embedding Asociado': [document or ""],
-            'Distancia': [f"{distance:.4f}" if distance else ""]
-        }))
-
-        os.remove(fragment_filename)
-
-    # Aquí se realiza el cambio para que el archivo se guarde con el nombre del dataset y el modelo seleccionado
-    dataset_name = os.path.splitext(uploaded_file.name)[0]  # El nombre base del archivo de audio
-    model_name = model_choice.replace(" ", "_").replace("con", "").lower()  # Formatear el nombre del modelo
-    output_filename = f"{dataset_name}_{model_name}_historico.xlsx"  # Crear el nombre del archivo
-    output_path = os.path.join(HISTORIC_DIR, output_filename)
-    
-    pd.DataFrame(historical_data).to_excel(output_path, index=False)
-    st.success(f"Histórico guardado en: {output_path}")
-
