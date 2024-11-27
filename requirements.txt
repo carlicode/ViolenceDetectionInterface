@@ -9,3 +9,4 @@ streamlit==1.40.1
 openai-whisper==20240930
 openai==1.55.1
 chromadb==0.5.20
+openpyxl==3.1.2
