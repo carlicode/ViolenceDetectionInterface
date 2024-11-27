@@ -65,7 +65,7 @@ if uploaded_file:
 
         st.audio(fragment_filename, format="audio/wav")
 
-        recognized_text = audio_to_text(fragment_filename)  # Usamos la función de Whisper
+        recognized_text = audio_to_text(fragment_filename)  
         document, distance = query_chroma_db(db, recognized_text) if recognized_text else (None, None)
 
         pred_percentage = [round(p * 100, 2) for p in pred]
