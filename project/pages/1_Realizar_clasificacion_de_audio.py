@@ -11,8 +11,19 @@ from modules.audio_prediction import load_audio_model, split_audio, predict_epis
 HISTORIC_DIR = 'histórico/'
 os.makedirs(HISTORIC_DIR, exist_ok=True)
 
-#OPENAI_API_KEY = ''
-client = OpenAI()
+# Initialize OpenAI client with proper error handling
+try:
+    # Check if API key is set in environment
+    import os
+    api_key = os.getenv('OPENAI_API_KEY')
+    if api_key:
+        client = OpenAI(api_key=api_key)
+    else:
+        # Initialize without API key (will fail gracefully when used)
+        client = OpenAI()
+except Exception as e:
+    st.error(f"Error initializing OpenAI client: {e}")
+    client = None
 
 # Etiquetas para las predicciones
 labels = ["crying", "glass_breaking", "gun_shot", "people_talking", "screams"]
@@ -42,11 +53,19 @@ st.write(f"Modelo seleccionado: **{model_choice}**")
 
 # Función para convertir audio a texto usando openAI
 def audio_to_text(audio_path):
-    audio_file = open(audio_path, "rb")
-    transcription = client.audio.transcriptions.create(
-        model="whisper-1", 
-        file=audio_file)
-    return transcription.text  # Devolver el texto transcrito
+    if client is None:
+        st.warning("OpenAI client not available. Skipping audio transcription.")
+        return ""
+    
+    try:
+        audio_file = open(audio_path, "rb")
+        transcription = client.audio.transcriptions.create(
+            model="whisper-1", 
+            file=audio_file)
+        return transcription.text  # Devolver el texto transcrito
+    except Exception as e:
+        st.error(f"Error transcribing audio: {e}")
+        return ""
 
 # Subir archivo de audio
 uploaded_file = st.file_uploader("Sube un archivo de audio", type=["wav"])

@@ -28,14 +28,14 @@ def calculate_violence_degree(row, weights, epsilon=0.001):
         if distance > 100:  # Umbral arbitrario para detectar valores atípicos
             distance = 1.0
 
-        # Calcular el puntaje de violencia
+        # Calcular el puntaje de violencia ponderando por la distancia
         weight_distance = 1 / (distance + epsilon)
         violence_score += weight * probability * weight_distance
     return violence_score
 
 def process_violence_data(file_path, weights):
     """
-    Procesa un archivo Excel para calcular el grado de violencia.
+    Procesa un archivo Excel para calcular el grado de violencia de cada fragmento.
     
     Args:
         file_path (str): Ruta del archivo Excel.
@@ -53,7 +53,7 @@ def process_violence_data(file_path, weights):
     # Limitar los valores atípicos de 'Distancia'
     df["Distancia"] = df["Distancia"].apply(lambda x: abs(x) if x > 0 else 1.0)  # Garantizar que 'Distancia' sea positiva y reemplazar valores erróneos
     
-    # Calcular grado de violencia para cada fragmento
+    # Calcular grado de violencia para cada fragmento usando la función anterior
     df["Grado de Violencia"] = df.apply(lambda row: calculate_violence_degree(row, weights), axis=1)
     
     return df
@@ -76,6 +76,7 @@ def predict_violence_evolution(df, label_weights):
     # Obtener los últimos fragmentos correspondientes a los últimos 10 segundos
     last_10_seconds = df[df["Tiempo (segundos)"] >= df["Tiempo (segundos)"].max() - 10]
     
+    # Seleccionar los fragmentos recientes para el análisis de tendencia
     if len(last_10_seconds) >= 5:
         recent_fragments = last_10_seconds["Grado de Violencia"].tail(10)  # Usamos los últimos 10 segundos
     elif len(last_10_seconds) >= 5:
@@ -83,7 +84,7 @@ def predict_violence_evolution(df, label_weights):
     else:
         return "Datos insuficientes para realizar la predicción.", {}
 
-    # Calcular la tendencia
+    # Calcular la tendencia de la violencia (pendiente)
     x = np.arange(len(recent_fragments))
     y = recent_fragments.values
     slope, _ = np.polyfit(x, y, 1)
@@ -91,18 +92,18 @@ def predict_violence_evolution(df, label_weights):
     # Promedio reciente del grado de violencia
     avg_recent_violence = recent_fragments.mean()
 
-    # Evaluar eventos críticos
+    # Evaluar eventos críticos recientes (por ejemplo, disparos, gritos, vidrios rotos)
     critical_events = df[["gun_shot", "screams", "glass_breaking"]].tail(5)
     high_critical_events = (critical_events > 50).sum().sum()
 
-    # Ponderar factores
+    # Ponderar factores para el puntaje de evolución
     alpha, beta, gamma = 0.5, 0.4, 0.2
     evolution_score = (
         alpha * avg_recent_violence +
         beta * slope +
         gamma * high_critical_events)/100
 
-    # Clasificar evolución
+    # Clasificar la evolución de la violencia según el puntaje
     result = ""
     if evolution_score > 0.5:
         result = "Es probable que la violencia evolucione."
@@ -111,7 +112,7 @@ def predict_violence_evolution(df, label_weights):
     else:
         result = "Es probable que la violencia disminuya."
 
-    # Desglose del cálculo
+    # Desglose del cálculo para interpretación
     breakdown = {
         "Promedio Grado de Violencia Reciente": avg_recent_violence,
         "Pendiente de la Tendencia": slope,
