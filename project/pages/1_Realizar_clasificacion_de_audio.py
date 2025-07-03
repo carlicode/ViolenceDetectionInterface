@@ -16,19 +16,21 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 HISTORIC_DIR = 'histórico/'
 os.makedirs(HISTORIC_DIR, exist_ok=True)
 
-# Initialize OpenAI client with proper error handling
-try:
-    # Check if API key is set in environment
-    import os
-    api_key = os.getenv('OPENAI_API_KEY')
-    if api_key:
-        client = OpenAI(api_key=api_key)
-    else:
-        # Initialize without API key (will fail gracefully when used)
-        client = OpenAI()
-except Exception as e:
-    st.error(f"Error initializing OpenAI client: {e}")
-    client = None
+# Campo para la API key en la barra lateral (oculto tipo password)
+openai_api_key = st.sidebar.text_input(
+    "🔑 Ingresa tu OpenAI API Key", 
+    type="password", 
+    help="Tu clave nunca se almacena, solo se usa en esta sesión."
+)
+
+client = None
+if openai_api_key:
+    try:
+        client = OpenAI(api_key=openai_api_key)
+    except Exception as e:
+        st.error(f"Error inicializando OpenAI: {e}")
+else:
+    st.warning("Por favor ingresa tu OpenAI API Key en la barra lateral para habilitar la transcripción.")
 
 # Etiquetas para las predicciones
 labels = ["crying", "glass_breaking", "gun_shot", "people_talking", "screams"]
