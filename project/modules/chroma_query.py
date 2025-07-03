@@ -2,6 +2,12 @@ from chromadb import PersistentClient
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
 
+
+import sys
+import pysqlite3
+sys.modules["sqlite3"] = pysqlite3
+
+
 # Configuración global para ChromaDB
 CHROMA_PATH = 'data_embeddings/'
 COLLECTION_NAME = 'violence_embeddings_DB'

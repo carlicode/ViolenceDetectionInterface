@@ -7,6 +7,11 @@ from openai import OpenAI
 from modules.chroma_query import load_chroma_db, query_chroma_db
 from modules.audio_prediction import load_audio_model, split_audio, predict_episode
 
+import sys
+import pysqlite3
+sys.modules["sqlite3"] = pysqlite3
+
+
 # Configuración del directorio para guardar el histórico
 HISTORIC_DIR = 'histórico/'
 os.makedirs(HISTORIC_DIR, exist_ok=True)
