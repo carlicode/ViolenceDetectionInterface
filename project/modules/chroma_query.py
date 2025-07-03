@@ -7,6 +7,7 @@ from chromadb import PersistentClient
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
 from openai import OpenAI
+import streamlit as st
 
 # Configuración global para ChromaDB
 CHROMA_PATH = 'data_embeddings/'
@@ -61,7 +62,14 @@ def query_chroma_db(db, input_text, model_name=MODEL_NAME, n_results=1):
         return document, distance
     return None, None
 
-if openai_api_key:
-    st.session_state["openai_api_key"] = openai_api_key
-elif "openai_api_key" in st.session_state:
+openai_api_key = ""  # Inicializa la variable
+
+if "openai_api_key" in st.session_state and st.session_state["openai_api_key"]:
     openai_api_key = st.session_state["openai_api_key"]
+else:
+    openai_api_key = st.sidebar.text_input(
+        "🔑 Ingresa tu OpenAI API Key", 
+        type="password", 
+        help="Tu clave nunca se almacena, solo se usa en esta sesión.",
+        key="openai_api_key"
+    )
