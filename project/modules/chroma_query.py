@@ -27,13 +27,26 @@ def load_chroma_db(chroma_path=CHROMA_PATH, collection_name=COLLECTION_NAME):
 
 def query_chroma_db(db, input_text, model_name=MODEL_NAME, n_results=1):
     """
-    Realiza una consulta en la base vectorial de ChromaDB.
+    Realiza una consulta semántica en la base vectorial de ChromaDB usando embeddings.
+    Args:
+        db (Collection): Colección de ChromaDB.
+        input_text (str): Texto a consultar.
+        model_name (str): Nombre del modelo de embeddings.
+        n_results (int): Número de resultados a retornar.
+    Returns:
+        tuple: (documento más similar, distancia de similitud) o (None, None) si no hay resultados.
     """
+    # Se genera el embedding del texto de entrada
     model = SentenceTransformer(model_name)
     query_embedding = model.encode(input_text).tolist()
+    # Se consulta la base vectorial
     results = db.query(query_embeddings=[query_embedding], n_results=n_results)
 
-    if results['documents'] and results['distances']:
+    # Verifica que haya resultados antes de acceder
+    if (
+        results.get('documents') and len(results['documents']) > 0 and len(results['documents'][0]) > 0 and
+        results.get('distances') and len(results['distances']) > 0 and len(results['distances'][0]) > 0
+    ):
         document = results['documents'][0][0]
         distance = results['distances'][0][0]
         return document, distance
