@@ -1,5 +1,5 @@
 # Remove pysqlite3-binary as it's not available
-# pysqlite3-binary
+pysqlite3-binary>=0.5.0
 numpy==1.26.4
 librosa==0.10.2.post1
 scikit-learn==1.5.2
