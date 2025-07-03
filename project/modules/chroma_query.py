@@ -2,11 +2,9 @@ from chromadb import PersistentClient
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
 
-
+__import__('pysqlite3')
 import sys
-import pysqlite3
-sys.modules["sqlite3"] = pysqlite3
-
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # Configuración global para ChromaDB
 CHROMA_PATH = 'data_embeddings/'
