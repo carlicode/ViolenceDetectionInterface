@@ -1,26 +1,42 @@
 # Remove the pysqlite3 import and use standard sqlite3
-# __import__('pysqlite3')
-# import sys
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import streamlit as st
 
-# Página de Streamlit
-st.title("IMPLEMENTACIÓN DE MODELO DE PROCESAMIENTO DE LENGUAJE NATURAL PARA PREDICCIÓN DE VIOLENCIA MEDIANTE SEGMENTACIÓN DE AUDIO STREAM")
+# Título y presentación
+st.title("Sistema Inteligente de Detección y Clasificación de Violencia en Audio")
 
-st.write("""
-En esta interfaz podrás cargar un archivo de audio y seleccionar un modelo de predicción para realizar un análisis de fragmentos de audio.
-Este sistema está diseñado para detectar y clasificar eventos como llantos, disparos, vidrios rotos, entre otros.
+st.markdown("""
+**Desarrollado por:** Carla Marcela Florida Roman  
+**Tutor:** Eduardo Di Santi Grönros, PhD  
+**Universidad Mayor de San Simón, Cochabamba, Bolivia**
 """)
 
 st.write("""
-### ¿Cómo funciona?
-1. **Subida de archivo de audio**: Puedes cargar un archivo de audio en formato WAV. El archivo será automáticamente dividido en fragmentos de 2 segundos para realizar las predicciones.
-2. **Selección de modelo de predicción**: Luego podrás elegir el modelo de predicción que prefieras. Este modelo se encargará de identificar diferentes tipos de eventos, como gritos, disparos, llantos, etc.
-3. **Análisis de fragmentos**: Una vez cargado el archivo y seleccionado el modelo, el sistema analizará cada fragmento de audio y presentará las predicciones correspondientes.
-4. **Visualización de resultados**: Los resultados de las predicciones y la transcripción del audio se mostrarán en tablas y gráficos, lo que te permitirá obtener un análisis detallado de los eventos detectados.
-5. **Descarga del histórico**: Finalmente, tendrás la opción de descargar un archivo histórico con todos los resultados y detalles de los fragmentos procesados.
-
-### Objetivo
-Este modelo de procesamiento de lenguaje natural está diseñado para analizar audios segmentados, identificar eventos violentos y proporcionar un puntaje de violencia basado en los datos obtenidos. Además, se integran características de transcripción de texto y búsqueda de similitudes mediante una base de datos de embeddings.
-
+Este sistema utiliza inteligencia artificial avanzada para analizar archivos de audio, identificar y clasificar eventos violentos, y calcular el grado de violencia presente en grabaciones. La arquitectura integra modelos de aprendizaje profundo, procesamiento de lenguaje natural y búsqueda semántica para ofrecer un análisis detallado y visualmente intuitivo.
 """)
+
+st.markdown("""
+### ¿Qué puedes hacer con esta interfaz?
+- **Subir archivos de audio** en formatos WAV, MP3, M4A o FLAC.
+- **Seleccionar el modelo de predicción** más adecuado para tu análisis.
+- **Fragmentar automáticamente** el audio en segmentos de 2 segundos para un análisis granular.
+- **Detectar y clasificar eventos** como gritos, disparos, llantos, vidrios rotos y conversaciones.
+- **Transcribir el audio** usando modelos de OpenAI (requiere API Key).
+- **Buscar similitud semántica** con una base de datos de embeddings para contextualizar los resultados.
+- **Visualizar resultados** en tablas y gráficos interactivos.
+- **Descargar el histórico** de análisis en formato Excel para documentación o investigación.
+- **Calcular y visualizar el grado de violencia** y su evolución a lo largo del tiempo.
+""")
+
+st.markdown("""
+### Arquitectura y Flujo de Trabajo
+1. **Carga y segmentación de audio**: El usuario sube un archivo, que se divide automáticamente en fragmentos de 2 segundos.
+2. **Predicción de eventos**: Cada fragmento es analizado por un modelo de IA entrenado para identificar eventos violentos.
+3. **Transcripción y embeddings**: Opcionalmente, cada fragmento se transcribe y se consulta su similitud semántica en una base vectorial.
+4. **Visualización y análisis**: Los resultados se muestran en tablas, gráficos y se calculan métricas de violencia y su tendencia.
+5. **Exportación**: El usuario puede descargar el histórico completo del análisis realizado.
+""")
+
+st.info("Para comenzar, selecciona una de las opciones en el menú de la izquierda.")
