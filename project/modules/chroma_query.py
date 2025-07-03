@@ -6,6 +6,7 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 from chromadb import PersistentClient
 from chromadb.utils import embedding_functions
 from sentence_transformers import SentenceTransformer
+from openai import OpenAI
 
 # Configuración global para ChromaDB
 CHROMA_PATH = 'data_embeddings/'
@@ -59,3 +60,8 @@ def query_chroma_db(db, input_text, model_name=MODEL_NAME, n_results=1):
         distance = results['distances'][0][0]
         return document, distance
     return None, None
+
+if openai_api_key:
+    st.session_state["openai_api_key"] = openai_api_key
+elif "openai_api_key" in st.session_state:
+    openai_api_key = st.session_state["openai_api_key"]
