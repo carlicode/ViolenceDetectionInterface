@@ -122,53 +122,93 @@ Fragmentación de audio en texto y espectrograma para el análisis y predicción
 
 ## 🚀 Instalación y Configuración
 
+### Compatibilidad Multiplataforma
+
+Este proyecto es compatible con:
+- **Windows** (Windows 10/11)
+- **macOS** (10.15 o superior)
+- **Linux** (Ubuntu 18.04+, CentOS 7+)
+
 ### Prerrequisitos
 
-- Python 3.8 o superior
+- Python 3.10 o superior
 - pip (gestor de paquetes de Python)
-- Git (opcional, para clonar el repositorio)
+- Conexión a Internet (para descargar dependencias)
 
-### Pasos de Instalación
+---
 
-1. **Clonar o descargar el proyecto**
-   ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd ViolenceDetectionInterface
-   ```
+## 📋 Instalación por Sistema Operativo
 
-2. **Crear un entorno virtual (recomendado)**
-   ```bash
-   # Crear entorno virtual
-   python -m venv venv
-   
-   # Activar el entorno virtual
-   # En Windows:
-   venv\Scripts\activate
-   # En macOS/Linux:
-   source venv/bin/activate
-   ```
+### 🪟 Windows
 
-3. **Instalar dependencias**
-   ```bash
-   pip install -r requirements.txt
-   ```
+#### Instalación Automática (Recomendada)
+1. **Descargar Python 3.10+** desde https://www.python.org/downloads/
+   - **IMPORTANTE**: Marcar "Add Python to PATH" durante la instalación
+2. **Ejecutar el instalador**: Hacer doble clic en `INSTALAR_Y_EJECUTAR.bat`
+3. **Ejecutar la aplicación**: Hacer doble clic en `ABRIR_INTERFAZ.bat`
 
-4. **Configurar API Key de OpenAI (opcional)**
-   
-   Para usar la funcionalidad de transcripción de audio a texto, necesitas configurar tu API key de OpenAI:
-   
-   ```bash
-   # En Windows:
-   set OPENAI_API_KEY=tu_api_key_aqui
-   
-   # En macOS/Linux:
-   export OPENAI_API_KEY=tu_api_key_aqui
-   ```
-   
-   O crear un archivo `.env` en la raíz del proyecto:
-   ```
-   OPENAI_API_KEY=tu_api_key_aqui
-   ```
+#### Instalación Manual
+```cmd
+# Crear entorno virtual
+python -m venv venv
+
+# Activar entorno virtual
+venv\Scripts\activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar aplicación
+cd project
+streamlit run main.py
+```
+
+**📖 Ver documentación completa**: [README_WINDOWS.md](README_WINDOWS.md)
+
+### 🍎 macOS
+
+#### Instalación Automática (Recomendada)
+1. **Instalar Python 3.10+** (recomendado usar Homebrew: `brew install python@3.10`)
+2. **Ejecutar el instalador**: `./INSTALAR_Y_EJECUTAR.sh`
+3. **Ejecutar la aplicación**: `./ABRIR_INTERFAZ.command`
+
+#### Instalación Manual
+```bash
+# Crear entorno virtual
+python3 -m venv venv
+
+# Activar entorno virtual
+source venv/bin/activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar aplicación
+cd project
+streamlit run main.py
+```
+
+### 🐧 Linux
+
+#### Instalación Manual
+```bash
+# Instalar Python 3.10+
+sudo apt update
+sudo apt install python3.10 python3.10-venv python3-pip
+
+# Crear entorno virtual
+python3 -m venv venv
+
+# Activar entorno virtual
+source venv/bin/activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar aplicación
+cd project
+streamlit run main.py
+```
 
 ---
 
